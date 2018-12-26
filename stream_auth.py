@@ -9,6 +9,7 @@ import time
 import io
 import json
 import sys
+import hash_check
 
 from flask_oauthlib import client
 
@@ -72,8 +73,8 @@ def record_video():
 
 @app.route('/stream')
 def stream_video():
-  access_token = flask.session.get('access_token')        
-  if access_token is None:
+  access_token = flask.session.get('access_token')
+  if access_token is None and not hash_check.check(flask.request):
     callback = flask.url_for('authorized', _external=True)
     return google.authorize(callback=callback)
 

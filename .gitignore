@@ -1,3 +1,5 @@
 client_secret.json
 authorized_users.txt
 #\.gitignore
+hash_check.py
+*.pyc
