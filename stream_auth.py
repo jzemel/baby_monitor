@@ -41,36 +41,15 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-
-@app.route('/image')
-def capture_image():
-  access_token = flask.session.get('access_token')        
-  if access_token is None:
+@app.route('/home')
+@app.route('/home/<width>')
+def home(width='960'):
+  access_token = flask.session.get('access_token')
+  if access_token is None and not hash_check.check(flask.request):
     callback = flask.url_for('authorized', _external=True)
     return google.authorize(callback=callback)
 
-  camera.hflip = False
-  camera.vflip = False
-  camera.rotation = 0  # 0,90,180,270
-  camera.capture('image.jpg')
-  return 'OK'
-
-
-@app.route('/video')
-def record_video():
-  access_token = flask.session.get('access_token')        
-  if access_token is None:
-    callback = flask.url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
-
-  camera.start_recording(
-      'video.h264', format='h264', resize=(640, 480), bitrate=1000000)
-  for _ in range(10):
-    now = datetime.datetime.now() 
-    camera.annotate_text = '{0} - {1: %Y/%b/%d %H:%M:%S}'.format('Room', now)
-    time.sleep(1)
-  camera.stop_recording()
-  return 'OK'
+  return flask.render_template('template.html', width=width)
 
 
 @app.route('/stream')
