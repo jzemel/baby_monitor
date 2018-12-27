@@ -3,3 +3,5 @@ authorized_users.txt
 #\.gitignore
 hash_check.py
 *.pyc
+*.pem
+*.rsa

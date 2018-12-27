@@ -10,6 +10,8 @@ import io
 import json
 import sys
 import hash_check
+import subprocess
+import re
 
 from flask_oauthlib import client
 
@@ -85,10 +87,12 @@ def stream_video():
 def _stream_video():
   camera.resolution = (960, 540)
   camera.framerate = 30
-  camera.rotation = 180
+  camera.rotation = 0
   camera.annotate_background = picamera.color.Color('#777777')
 
   frame_count = 0
+  signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
+  #add other telemetry here: CPU, mem, network buffers?
 
   stream = io.BytesIO()
   for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
@@ -101,7 +105,7 @@ def _stream_video():
     yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + data + b'\r\n')
 
     now = datetime.datetime.now()
-    camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2}'.format('Room', now, frame_count)
+    camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, frame_count, signal)
 
     time.sleep(.1)
 
@@ -122,7 +126,7 @@ if __name__ == '__main__':
   try:
     global camera
     camera = picamera.PiCamera()
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
   finally:
     camera.close()
     print("closing camera")
