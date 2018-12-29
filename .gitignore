@@ -5,3 +5,6 @@ hash_check.py
 *.pyc
 *.pem
 *.rsa
+id_rsa
+id_rsa.pub
+template.html

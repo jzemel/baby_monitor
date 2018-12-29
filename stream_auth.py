@@ -13,6 +13,7 @@ import hash_check
 import subprocess
 import re
 
+from flask_socketio import SocketIO, send, emit
 from flask_oauthlib import client
 
 REDIRECT_URI = '/oauth2callback'
@@ -25,6 +26,7 @@ with open('client_secret.json') as f:
 app = flask.Flask('my demo')
 camera = None
 app.secret_key = config['app_secret']
+socketio = SocketIO(app)
 
 oauth = client.OAuth(app)
 google = oauth.remote_app(
@@ -100,12 +102,22 @@ def authorized():
   else:
     return "%s not authorized" % user['email']
 
+@socketio.on('get_tlm', namespace='/tlm')
+def get_tlm():
+  signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
+  tlm = {}
+  tlm['signal'] = signal
+  tlm['timestamp'] = subprocess.check_output(["date"])
+  emit('tlm_json',json.dumps(tlm))
 
 if __name__ == '__main__':
   try:
     global camera
+    print("initializing camera")
     camera = picamera.PiCamera()
-    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
+    print("camera initialized")
+    socketio.run(app, host='0.0.0.0', port=8080, debug=False, certfile='cert.pem', keyfile='key.pem')
+    #socketio.run(app, host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
   finally:
     camera.close()
     print("closing camera")
