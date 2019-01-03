@@ -102,7 +102,7 @@ def authorized():
   else:
     return "%s not authorized" % user['email']
 
-@socketio.on('get_tlm', namespace='/tlm')
+@socketio.on('get_tlm')
 def get_tlm():
   signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
   tlm = {}
@@ -116,6 +116,7 @@ if __name__ == '__main__':
     print("initializing camera")
     camera = picamera.PiCamera()
     print("camera initialized")
+    #socketio.run(app, host='0.0.0.0', port=8080, debug=False)
     socketio.run(app, host='0.0.0.0', port=8080, debug=False, certfile='cert.pem', keyfile='key.pem')
     #socketio.run(app, host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
   finally:
