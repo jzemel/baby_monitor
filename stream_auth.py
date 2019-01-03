@@ -104,9 +104,12 @@ def authorized():
 
 @socketio.on('get_tlm')
 def get_tlm():
-  signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
   tlm = {}
-  tlm['signal'] = signal
+  tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
+  tlm['cpu'] = "not implemented" # "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)/($2+$4+$5)} END {print usage}'
+  tlm['mem']) = "not implemented"
+  tlm['load']) = "not implemented"
+  tlm['fps']) = "not implemented"
   tlm['timestamp'] = subprocess.check_output(["date"])
   emit('tlm_json',json.dumps(tlm))
 
