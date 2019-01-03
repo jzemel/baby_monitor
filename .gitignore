@@ -8,3 +8,4 @@ hash_check.py
 id_rsa
 id_rsa.pub
 template.html
+static/*
