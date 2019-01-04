@@ -12,6 +12,7 @@ import sys
 import hash_check
 import subprocess
 import re
+import psutil
 
 from flask_socketio import SocketIO, send, emit
 from flask_oauthlib import client
@@ -43,6 +44,10 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
+class FPS: 
+  frame_count = 0
+  frame_start = 0
+
 @app.route('/home')
 @app.route('/home/<width>')
 def home(width='960'):
@@ -71,13 +76,13 @@ def _stream_video():
   camera.rotation = 0
   camera.annotate_background = picamera.color.Color('#777777')
 
-  frame_count = 0
+  FPS.frame_count = 0
+  FPS.frame_start = datetime.datetime.now()
   signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
-  #add other telemetry here: CPU, mem, network buffers?
 
   stream = io.BytesIO()
   for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-    frame_count += 1
+    FPS.frame_count += 1
     stream.seek(0)
     data = stream.read()
     stream.seek(0)
@@ -86,7 +91,7 @@ def _stream_video():
     yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + data + b'\r\n')
 
     now = datetime.datetime.now()
-    camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, frame_count, signal)
+    camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, FPS.frame_count, signal)
 
     time.sleep(.1)
 
@@ -106,12 +111,15 @@ def authorized():
 def get_tlm():
   tlm = {}
   tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
-  tlm['cpu'] = "not implemented" # "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)/($2+$4+$5)} END {print usage}'
-  tlm['mem']) = "not implemented"
-  tlm['load']) = "not implemented"
-  tlm['fps']) = "not implemented"
-  tlm['timestamp'] = subprocess.check_output(["date"])
+  tlm['cpu'] = psutil.cpu_percent()
+  tlm['mem'] = "%d%% of %d MB" % (psutil.virtual_memory().percent, psutil.virtual_memory().total/1000000)
+  tlm['disk'] = "%d%% of %d GB" % (psutil.disk_usage('/').percent, psutil.disk_usage('/').total/1000000000)
+  tlm['load'] = "not implemented"
+  tlm['fps'] = round(FPS.frame_count / ((datetime.datetime.now() - FPS.frame_start).total_seconds()),2)
+  tlm['timestamp'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
   emit('tlm_json',json.dumps(tlm))
+  print("sent telemtry")
+  #network buffers?
 
 if __name__ == '__main__':
   try:
