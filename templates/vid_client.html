@@ -33,23 +33,23 @@
 			<div class="row">
 				<div class="col-9">
 					<div class="embed-responsive embed-responsive-16by9">
-						<iframe class="embed-responsive-item" id="player" src="abount:blank" allowfullscreen></iframe>
+						<iframe class="embed-responsive-item" id="player" allowfullscreen></iframe>
 					<!-- set the source in js using the document.domain -->
 					</div>
 				</div>
 				<div class="col-3" id="side_panel">
-					<div class="noise">TBD</div>
+					<div class="noise"></div>
 					<div class="btn-group-vertical">
-						<button type="button" class="btn btn-dark" onclick="restart_stream()"><i class="far fa-play-circle"></i></button>
-						<button type="button" class="btn btn-dark" onclick="stop_stream()"><i class="far fa-stop-circle"></i></button>
-						<button type="button" class="btn btn-dark" onclick="restart_stream()"><i class="fas fa-redo-alt"></i></button>
+						<button type="button" class="btn btn-dark" id="play_btn"><i class="far fa-play-circle"></i></button>
+						<button type="button" class="btn btn-dark" id="stop_btn"><i class="far fa-stop-circle"></i></button>
+						<button type="button" class="btn btn-dark" id="restart_btn"><i class="fas fa-redo-alt"></i></button>
 					</div>
 				</div>
 			</div>
 			<div class="container-fluid" id="system">
-				<p><small>Frame Rate: <span id="fps">Test</span>
-				 &emsp; Wifi Signal: <span id="signal"></span>
-				 &emsp; CPU: <span id="cpu"></span>
+				<p><small>Frame Rate: <span id="fps"></span> FPS
+				 &emsp; Wifi Signal: -<span id="signal"></span> dbm
+				 &emsp; CPU: <span id="cpu"></span>%
 				 &emsp; Memory: <span id="mem"></span>
 				 &emsp; Disk: <span id="disk"></span>
 				 &emsp; Timestamp: <span id="time"></span></small></p>				

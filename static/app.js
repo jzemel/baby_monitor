@@ -39,14 +39,20 @@ $(document).ready(function() {
         $('#time').text(tlm['timestamp']);
     });
 
+
+    $("#stop_btn").click(function() {
+        console.log('stopping');
+        window.frames[0].stop();
+      });
+
+    $("#restart_btn").click(function() {
+        console.log("restarting video");
+        document.getElementById('player').src = document.getElementById('player').src;
+    });
+
+    $("#play_btn").click(function() {
+        console.log("restarting video");
+        document.getElementById('player').src = document.getElementById('player').src;
+    });
+
 });
-
-function stop_video() {
-    console.log('stopping');
-    window.frames[0].stop();
-}
-
-function restart_video() {
-    console.log("restarting video");
-    document.getElementById('player').src = document.getElementById('player').src;
-}
