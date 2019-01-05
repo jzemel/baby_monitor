@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<!-- fonts and icons -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+		<title>Hello, world!</title>
+	</head>
+	<body>
+    	<!-- TITLE BAR -->
+    	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  			<div class="navbar-brand" href="#">OrliCam</div>
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<div class="nav-link"><i class="fas fa-link" id="link_status"></i><i class="fas fa-unlink"></i></div>
+				</li>
+			</ul>
+		</nav>
+
+<!-- 		CONTENT
+    	#row 1: iframe of video, and buttons
+		#row 2: system, unstyled table, pick a font -->
+		<div class="container" id="content">
+			<div class="row">
+				<div class="col-9">
+					<div class="embed-responsive embed-responsive-16by9">
+						<iframe class="embed-responsive-item" id="player" src="abount:blank" allowfullscreen></iframe>
+					<!-- set the source in js using the document.domain -->
+					</div>
+				</div>
+				<div class="col-3" id="side_panel">
+					<div class="noise">TBD</div>
+					<div class="btn-group-vertical">
+						<button type="button" class="btn btn-dark" onclick="restart_stream()"><i class="far fa-play-circle"></i></button>
+						<button type="button" class="btn btn-dark" onclick="stop_stream()"><i class="far fa-stop-circle"></i></button>
+						<button type="button" class="btn btn-dark" onclick="restart_stream()"><i class="fas fa-redo-alt"></i></button>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid" id="system">
+				<p><small>Frame Rate: <span id="fps">Test</span>
+				 - Wifi Signal: <span id="signal"></span>
+				 - CPU: <span id="cpu"></span>
+				 - Memory: <span id="mem"></span>
+				 - Disk: <span id="disk"></span>
+				 - Timestamp: <span id="time"></span></small></p>				
+			</div>
+		</div>
+
+		<!-- SCRIPTS -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<script src="my javascript">
+	</body>
+</html>

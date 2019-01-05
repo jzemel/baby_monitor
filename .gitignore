@@ -1,4 +1,4 @@
-client_secret.json
+*client_secret.json
 authorized_users.txt
 #\.gitignore
 hash_check.py
@@ -7,4 +7,4 @@ hash_check.py
 *.rsa
 id_rsa
 id_rsa.pub
-static/*
+templates/.*

@@ -49,14 +49,13 @@ class FPS:
   frame_start = 0
 
 @app.route('/home')
-@app.route('/home/<width>')
-def home(width='960'):
+def home():
   access_token = flask.session.get('access_token')
   if access_token is None and not hash_check.check(flask.request):
     callback = flask.url_for('authorized', _external=True)
     return google.authorize(callback=callback)
 
-  return flask.render_template('template.html', width=width)
+  return flask.render_template('vid_client.html')
 
 
 @app.route('/stream')
