@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     // fetch the stream
     frame_source = 'https://' + document.domain + ':' + location.port + '/stream';
-    document.getElementById('player').attr('src', frame_source);
+    document.getElementById('player').src = frame_source;
 
     // Connect to the Socket.IO server.
     // The connection URL has the following format:
@@ -28,8 +28,8 @@ $(document).ready(function() {
 
     // handle tlm input
     socket.on('tlm_json', function(msg) {
-        //console.log(msg);
         var tlm = JSON.parse(msg);
+        console.log("received msg with time" + tlm['timestamp']);
         $('#signal').text(tlm['signal']);
         $('#cpu').text(tlm['cpu']);
         $('#mem').text(tlm['mem']);

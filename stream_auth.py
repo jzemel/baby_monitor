@@ -107,7 +107,7 @@ def authorized():
     return "%s not authorized" % user['email']
 
 @socketio.on('get_tlm')
-def get_tlm():
+def get_tlm(time_sent):
   tlm = {}
   tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
   tlm['cpu'] = psutil.cpu_percent()
