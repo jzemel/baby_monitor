@@ -123,9 +123,7 @@ if __name__ == '__main__':
     print("initializing camera")
     camera = picamera.PiCamera()
     print("camera initialized")
-    #socketio.run(app, host='0.0.0.0', port=8080, debug=False)
-    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'), threaded=True)
-    #socketio.run(app, host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
   finally:
     camera.close()
     print("closing camera")
