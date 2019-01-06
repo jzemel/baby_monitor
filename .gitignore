@@ -7,4 +7,4 @@ hash_check.py
 *.rsa
 id_rsa
 id_rsa.pub
-templates/.*
+._*
