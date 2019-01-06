@@ -24,7 +24,7 @@ with open('authorized_users.txt') as f:
 with open('client_secret.json') as f:
   config = json.loads(f.read())
 
-app = flask.Flask('my demo')
+app = flask.Flask('yo Orli')
 camera = None
 app.secret_key = config['app_secret']
 
