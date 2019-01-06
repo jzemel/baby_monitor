@@ -13,15 +13,15 @@ $(document).ready(function() {
     // Event handler for new connections.
     // The callback function is invoked when a connection with the
     // server is established.
+    var d = new Date();
+
     socket.on('connect', function() {
         console.log("connected");
-        socket.emit('my_event', {data: 'I\'m connected!'});
-        socket.emit('get_tlm');
+        socket.emit('get_tlm',d.getTime());
     });
 
     // request tlm
       window.setInterval(function() {
-        var d = new Date();
         socket.emit('get_tlm',d.getTime());
         console.log("sent tlm request")
     }, 20000);

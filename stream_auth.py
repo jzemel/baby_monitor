@@ -10,6 +10,7 @@ import io
 import json
 import sys
 import hash_check
+import FPS
 import subprocess
 import re
 import psutil
@@ -44,9 +45,7 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-class FPS: 
-  frame_count = 0
-  frame_start = 0
+FPS = FPS.FPS_tracker()
 
 @app.route('/home')
 def home():
@@ -105,6 +104,20 @@ def authorized():
     return flask.redirect(flask.url_for('stream_video'))
   else:
     return "%s not authorized" % user['email']
+
+@app.route('/api/tlm', methods=['GET'])
+def get_tasks():
+  #investigate collectd
+  tlm = {}
+  tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
+  tlm['cpu'] = psutil.cpu_percent()
+  tlm['mem'] = "%d%% of %d MB" % (psutil.virtual_memory().percent, psutil.virtual_memory().total/1000000)
+  tlm['disk'] = "%d%% of %d GB" % (psutil.disk_usage('/').percent, psutil.disk_usage('/').total/1000000000)
+  #tlm['load'] = "not implemented"
+  tlm['fps'] = FPS.getFPS()
+  tlm['timestamp'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
+  print("sending telemtry via REST")
+  return flask.jsonify(tlm)
 
 @socketio.on('get_tlm')
 def get_tlm(time_sent):
