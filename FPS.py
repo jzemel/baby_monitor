@@ -1,3 +1,5 @@
+import datetime
+
 class FPS_tracker: 
 	def __init__(self):
 		self.frame_count = 0
@@ -7,4 +9,4 @@ class FPS_tracker:
 		if self.frame_start is None:
 			return None
 		else:
-			return round(FPS.frame_count / ((datetime.datetime.now() - FPS.frame_start).total_seconds()),1)
+			return round(self.frame_count / ((datetime.datetime.now() - self.frame_start).total_seconds()),1)

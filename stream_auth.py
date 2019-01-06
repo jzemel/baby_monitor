@@ -15,7 +15,6 @@ import subprocess
 import re
 import psutil
 
-from flask_socketio import SocketIO, send, emit
 from flask_oauthlib import client
 
 REDIRECT_URI = '/oauth2callback'
@@ -28,7 +27,6 @@ with open('client_secret.json') as f:
 app = flask.Flask('my demo')
 camera = None
 app.secret_key = config['app_secret']
-socketio = SocketIO(app)
 
 oauth = client.OAuth(app)
 google = oauth.remote_app(
@@ -113,24 +111,10 @@ def get_tasks():
   tlm['cpu'] = psutil.cpu_percent()
   tlm['mem'] = "%d%% of %d MB" % (psutil.virtual_memory().percent, psutil.virtual_memory().total/1000000)
   tlm['disk'] = "%d%% of %d GB" % (psutil.disk_usage('/').percent, psutil.disk_usage('/').total/1000000000)
-  #tlm['load'] = "not implemented"
   tlm['fps'] = FPS.getFPS()
-  tlm['timestamp'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
+  tlm['time'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
   print("sending telemtry via REST")
   return flask.jsonify(tlm)
-
-@socketio.on('get_tlm')
-def get_tlm(time_sent):
-  tlm = {}
-  tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
-  tlm['cpu'] = psutil.cpu_percent()
-  tlm['mem'] = "%d%% of %d MB" % (psutil.virtual_memory().percent, psutil.virtual_memory().total/1000000)
-  tlm['disk'] = "%d%% of %d GB" % (psutil.disk_usage('/').percent, psutil.disk_usage('/').total/1000000000)
-  tlm['load'] = "not implemented"
-  tlm['fps'] = round(FPS.frame_count / ((datetime.datetime.now() - FPS.frame_start).total_seconds()),2)
-  tlm['timestamp'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
-  emit('tlm_json',json.dumps(tlm))
-  print("sent telemtry")
   #network buffers?
 
 if __name__ == '__main__':
@@ -140,7 +124,7 @@ if __name__ == '__main__':
     camera = picamera.PiCamera()
     print("camera initialized")
     #socketio.run(app, host='0.0.0.0', port=8080, debug=False)
-    socketio.run(app, host='0.0.0.0', port=8080, debug=False, certfile='cert.pem', keyfile='key.pem')
+    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'), threaded=True)
     #socketio.run(app, host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
   finally:
     camera.close()

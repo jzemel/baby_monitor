@@ -4,40 +4,39 @@ $(document).ready(function() {
     frame_source = 'https://' + document.domain + ':' + location.port + '/stream';
     document.getElementById('player').src = frame_source;
 
-    // Connect to the Socket.IO server.
-    // The connection URL has the following format:
-    //     http[s]://<domain>:<port>[/<namespace>]
-    var socket = io.connect('https://' + document.domain + ':' + location.port, {secure: true});
-    console.log("socket created");
-    console.log('to https://' + document.domain + ':' + location.port)
-    // Event handler for new connections.
-    // The callback function is invoked when a connection with the
-    // server is established.
     var d = new Date();
-
-    socket.on('connect', function() {
-        console.log("connected");
-        socket.emit('get_tlm',d.getTime());
+    $.ajax({
+        url: 'https://' + document.domain + ':' + location.port + '/api/tlm',
+        dataType: "json",
+        timeout: 20000,
+    }).then(function(data) {
+        console.log("received REST data");
+       $('#signal').text(data['signal']);
+       $('#cpu').text(data['cpu']);
+       $('#mem').text(data['mem']);
+       $('#fps').text(data['fps']);
+       $('#disk').text(data['disk']);
+       $('#time').text(data['time']);
     });
 
     // request tlm
       window.setInterval(function() {
-        socket.emit('get_tlm',d.getTime());
-        console.log("sent tlm request")
+        
+        $.ajax({
+            url: 'https://' + document.domain + ':' + location.port + '/api/tlm',
+            dataType: "json",
+            timeout: 20000,
+        }).then(function(data) {
+            console.log("received REST data");
+           $('#signal').text(data['signal']);
+           $('#cpu').text(data['cpu']);
+           $('#mem').text(data['mem']);
+           $('#fps').text(data['fps']);
+           $('#disk').text(data['disk']);
+           $('#time').text(data['time']);
+        });
+        console.log("sent tlm GET request")
     }, 20000);
-
-    // handle tlm input
-    socket.on('tlm_json', function(msg) {
-        var tlm = JSON.parse(msg);
-        console.log("received msg with time" + tlm['timestamp']);
-        $('#signal').text(tlm['signal']);
-        $('#cpu').text(tlm['cpu']);
-        $('#mem').text(tlm['mem']);
-        $('#load').text(tlm['load']);
-        $('#fps').text(tlm['fps']);
-        $('#disk').text(tlm['disk']);
-        $('#time').text(tlm['timestamp']);
-    });
 
 
     $("#stop_btn").click(function() {
