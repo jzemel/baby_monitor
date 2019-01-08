@@ -23,6 +23,7 @@ with open('authorized_users.txt') as f:
   authorized_users = f.read().splitlines()
 with open('client_secret.json') as f:
   config = json.loads(f.read())
+  #replace with flask.jsonify
 
 app = flask.Flask('yo Orli')
 camera = None
@@ -112,6 +113,7 @@ def get_tasks():
   tlm['mem'] = "%d%% of %d MB" % (psutil.virtual_memory().percent, psutil.virtual_memory().total/1000000)
   tlm['disk'] = "%d%% of %d GB" % (psutil.disk_usage('/').percent, psutil.disk_usage('/').total/1000000000)
   tlm['fps'] = FPS.getFPS()
+  tlm['cpu_temp'] = psutil.sensors_temperatures()['cpu-thermal'][0].current
   tlm['time'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
   print("sending telemtry via REST")
   return flask.jsonify(tlm)

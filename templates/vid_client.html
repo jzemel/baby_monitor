@@ -32,10 +32,11 @@
 		<div class="container" id="content">
 			<div class="row">
 				<div class="col-9">
+					<!-- 16:9 aspect ratio -->
 					<div class="embed-responsive embed-responsive-16by9">
-						<iframe class="embed-responsive-item" id="player" allowfullscreen></iframe>
-					<!-- set the source in js using the document.domain -->
+					  <iframe id="player" class="embed-responsive-item" width="100%"></iframe>
 					</div>
+					<!-- set the source in js using the document.domain -->
 				</div>
 				<div class="col-3" id="side_panel">
 					<div class="noise"></div>
@@ -52,6 +53,7 @@
 				 &emsp; CPU: <span id="cpu"></span>%
 				 &emsp; Memory: <span id="mem"></span>
 				 &emsp; Disk: <span id="disk"></span>
+				 &emsp; CPU Temp: <span id="cpu_temp"></span>
 				 &emsp; Timestamp: <span id="time"></span></small></p>				
 			</div>
 		</div>
