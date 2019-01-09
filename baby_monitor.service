@@ -1,0 +1,15 @@
+[Unit]
+Description=Baby Monitor Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi    
+WorkingDirectory=/home/pi/baby_monitor
+ExecStart=/usr/bin/python /home/pi/baby_monitor/baby_monitor.py
+
+[Install]
+WantedBy=multi-user.target
