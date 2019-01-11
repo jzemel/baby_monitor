@@ -18,10 +18,11 @@ import psutil
 from flask_oauthlib import client
 
 REDIRECT_URI = '/oauth2callback'
+FILE_PATH = '/home/pi/baby_monitor/'
 
-with open('authorized_users.txt') as f:
+with open(FILE_PATH + 'authorized_users.txt') as f:
   authorized_users = f.read().splitlines()
-with open('client_secret.json') as f:
+with open(FILE_PATH + 'client_secret.json') as f:
   config = json.loads(f.read())
   #replace with flask.jsonify
 
@@ -54,7 +55,7 @@ def home():
     return google.authorize(callback=callback)
 
   return flask.render_template('vid_client.html')
-
+  #return flask.send_from_directory(FILE_PATH, 'templates/vid_client.html')
 
 @app.route('/stream')
 def stream_video():
@@ -70,7 +71,7 @@ def stream_video():
 def _stream_video():
   camera.resolution = (960, 540)
   camera.framerate = 30
-  camera.rotation = 0
+  camera.rotation = 180
   camera.annotate_background = picamera.color.Color('#777777')
 
   FPS.frame_count = 0
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     print("initializing camera")
     camera = picamera.PiCamera()
     print("camera initialized")
-    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=(FILE_PATH + 'cert.pem', FILE_PATH + 'key.pem'))
   finally:
     camera.close()
     print("closing camera")
