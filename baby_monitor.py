@@ -65,13 +65,17 @@ def stream_video():
     return google.authorize(callback=callback)
 
   return flask.Response(
-      _stream_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+      _stream_video(flask.request.args), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-def _stream_video():
-  camera.resolution = (960, 540)
-  camera.framerate = 30
-  camera.rotation = 180
+def _stream_video(args):
+  width = int(args.get('width')) if args.get('width') else 960
+  height = int(args.get('height')) if args.get('height') else width * 9/16
+  rotation = int(args.get('rotation')) if args.get('rotation') else 180
+  print("%dx%d, rot=%d" % (width,height, rotation))
+  camera.resolution = (width, height)
+  camera.framerate = 30 #TODO not sure if this does anything
+  camera.rotation = rotation
   camera.annotate_background = picamera.color.Color('#777777')
 
   FPS.frame_count = 0
