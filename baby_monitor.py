@@ -51,7 +51,7 @@ FPS = FPS.FPS_tracker()
 def home():
   access_token = flask.session.get('access_token')
   if access_token is None and not hash_check.check(flask.request):
-    callback = flask.url_for('authorized', _external=True)
+    callback = flask.url_for('authorized', _external=True)+'/home'
     return google.authorize(callback=callback)
 
   return flask.render_template('vid_client.html')
@@ -61,7 +61,7 @@ def home():
 def stream_video():
   access_token = flask.session.get('access_token')
   if access_token is None and not hash_check.check(flask.request):
-    callback = flask.url_for('authorized', _external=True)
+    callback = flask.url_for('authorized', _external=True)+'/stream_video'
     return google.authorize(callback=callback)
 
   return flask.Response(
@@ -94,14 +94,15 @@ def _stream_video():
     time.sleep(.1)
 
 @app.route(REDIRECT_URI)
-def authorized():
+@app.route(REDIRECT_URI + '/<page>')
+def authorized(page='home'):
   resp = google.authorized_response()
   access_token = resp['access_token']
   user = google.get('userinfo', token=(access_token, '')).data
   if user['email'] in authorized_users:
     flask.session['access_token'] = access_token, ''
     flask.session['user'] = user
-    return flask.redirect(flask.url_for('stream_video'))
+    return flask.redirect(flask.url_for(page))
   else:
     return "%s not authorized" % user['email']
 

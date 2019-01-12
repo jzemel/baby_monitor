@@ -1,14 +1,14 @@
 [Unit]
 Description=Baby Monitor Service
-After=network.target
+After=multi-user.target
 StartLimitIntervalSec=0
 
 [Service]
-Type=simple
+Type=idle
 Restart=always
 RestartSec=1
 User=pi    
-WorkingDirectory=/home/pi/baby_monitor
+WorkingDirectory=/home/pi/baby_monitor/
 ExecStart=/usr/bin/python /home/pi/baby_monitor/baby_monitor.py
 
 [Install]
