@@ -111,8 +111,12 @@ def authorized(page='home'):
     return "%s not authorized" % user['email']
 
 @app.route('/api/tlm', methods=['GET'])
-def get_tasks():
-  #investigate collectd
+def get_tlm():
+  access_token = flask.session.get('access_token')
+  if access_token is None and not hash_check.check(flask.request):
+    callback = flask.url_for('authorized', _external=True)+'/get_tlm'
+    return google.authorize(callback=callback)
+
   tlm = {}
   tlm['signal'] = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
   tlm['cpu'] = psutil.cpu_percent()
