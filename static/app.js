@@ -2,8 +2,7 @@ $(document).ready(function() {
 
   // fetch the stream, params as list
   function fetch_stream(params=[]) {
-    iframe = document.getElementById('player');
-    iframe.src = 'about:blank';
+    //find the div, delete iframe, insert iframe, do setwindowinterval
     var param_string = "?";
     console.log(params);  
     for (i = 0; i < params.length; i++) {
@@ -11,15 +10,17 @@ $(document).ready(function() {
     }
     console.log(param_string)
     frame_source = 'https://' + document.domain + ':' + location.port + '/stream' + param_string;
-    iframe.src = frame_source;
+    $("#player").attr('src', frame_source);
     // assign rendered img tag a 100% width to make it resize to fit (hacky)
-    var set_resize = window.setIntervalX(function() {
-          iframe.contentDocument.getElementsByTagName('img')[0].style="width:100%";
-          // if (iframe.contentDocument.getElementsByTagName('img')[0].style['width']="100%") {
-          //   clearInterval(set_resize);
-          //   console.log("cleared");
-          // }
-      }, 1000,8);
+    var set_resize = window.setInterval(function() {
+          $("#player").contents().find("img").css( "width","100%");
+          if ($("#player").contents().find("img").length > 0) {
+            if ($("#player").contents().find("img").css('width') == '100%') {
+              clearInterval(set_resize);
+              console.log("cleared");
+            }
+          }
+      }, 1000);
   }
 
   fetch_stream();

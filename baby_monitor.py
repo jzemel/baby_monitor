@@ -71,7 +71,7 @@ def stream_video():
 def _stream_video(args):
   width = int(args.get('width')) if args.get('width') else 960
   height = int(args.get('height')) if args.get('height') else width * 9/16
-  rotation = int(args.get('rotation')) if args.get('rotation') else 180
+  rotation = int(args.get('rotation')) if args.get('rotation') else 270
   print("%dx%d, rot=%d" % (width,height, rotation))
   camera.resolution = (width, height)
   camera.framerate = 30 #TODO not sure if this does anything

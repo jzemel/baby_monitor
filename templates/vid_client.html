@@ -16,15 +16,6 @@
 		<title>Hello, world!</title>
 	</head>
 	<body>
-    	<!-- TITLE BAR -->
-    	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  			<div class="navbar-brand" href="#">yo Orli</div>
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<div class="nav-link"><i class="fas fa-link" id="link_status"></i><i class="fas fa-unlink"></i></div>
-				</li>
-			</ul>
-		</nav>
 
 <!-- 		CONTENT
     	#row 1: iframe of video, and buttons
@@ -33,33 +24,27 @@
 			<div class="row">
 				<div class="col-9">
 					<!-- 16:9 aspect ratio -->
-					<div class="embed-responsive embed-responsive-16by9">
+					<div id="iframe" class="embed-responsive embed-responsive-16by9">
 					  <iframe id="player" class="embed-responsive-item" width="100%"></iframe>
 					</div>
 					<!-- set the source in js using the document.domain -->
 				</div>
 				<div class="col-3" id="side_panel">
-					<div class="noise"></div>
-					<div class="btn-group-vertical">
-						<button type="button" class="btn btn-dark" id="play_btn"><i class="far fa-play-circle"></i></button>
-						<button type="button" class="btn btn-dark" id="stop_btn"><i class="far fa-stop-circle"></i></button>
-						<button type="button" class="btn btn-dark" id="restart_btn"><i class="fas fa-redo-alt"></i></button>
-					</div>
-					<div class="dropdown">
-					  	<select class="dropdown" id="resolution">
-						    <option value="1920">1080p</option>
-						    <option value="960" selected="selected">Medium</option>
-						    <option value="480">Low</option>
-					  	</select>
-				  </div>
-				  <div class="dropdown">
-					  	<select class="dropdown" id="rotation">
-						    <option value="0">0</option>
-						    <option value="90">90</option>
-						    <option value="180" selected="selected">180</option>
-						    <option value="270">270</option>
-					  	</select>
-				  </div>
+					<button type="button" cid="play_btn">PLAY</button>
+					<button type="button" id="stop_btn">STOP</button>
+					<button type="button" id="restart_btn">RESTART</button>
+
+				  	<select class="dropdown" id="resolution">
+					    <option value="1920">1080p</option>
+					    <option value="960" selected="selected">Medium</option>
+					    <option value="480">Low</option>
+				  	</select>
+				  	<select class="dropdown" id="rotation">
+					    <option value="0">0</option>
+					    <option value="90">90</option>
+					    <option value="180">180</option>
+					    <option value="270" selected="selected">270</option>
+				  	</select>	
 				</div>
 			</div>
 			<div class="container-fluid" id="system">
