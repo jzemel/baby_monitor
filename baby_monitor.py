@@ -29,6 +29,7 @@ with open(FILE_PATH + 'client_secret.json') as f:
 app = flask.Flask('yo Orli')
 camera = None
 app.secret_key = config['app_secret']
+port = config['port']
 
 oauth = client.OAuth(app)
 google = oauth.remote_app(
@@ -135,7 +136,7 @@ if __name__ == '__main__':
     print("initializing camera")
     camera = picamera.PiCamera()
     print("camera initialized")
-    app.run(host='0.0.0.0', port=8080, debug=False, ssl_context=(FILE_PATH + 'cert.pem', FILE_PATH + 'key.pem'))
+    app.run(host='0.0.0.0', port=port, debug=False, ssl_context=(FILE_PATH + 'cert.pem', FILE_PATH + 'key.pem'))
   finally:
     camera.close()
     print("closing camera")
