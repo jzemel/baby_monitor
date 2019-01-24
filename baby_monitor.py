@@ -30,6 +30,8 @@ app = flask.Flask('yo Orli')
 camera = None
 app.secret_key = config['app_secret']
 port = config['port']
+def_rotation = config['rotation']
+def_width = config['width']
 
 oauth = client.OAuth(app)
 google = oauth.remote_app(
@@ -70,9 +72,9 @@ def stream_video():
 
 
 def _stream_video(args):
-  width = int(args.get('width')) if args.get('width') else 960
+  width = int(args.get('width')) if args.get('width') else def_width
   height = int(args.get('height')) if args.get('height') else width * 9/16
-  rotation = int(args.get('rotation')) if args.get('rotation') else 270
+  rotation = int(args.get('rotation')) if args.get('rotation') else def_rotation
   print("%dx%d, rot=%d" % (width,height, rotation))
   camera.resolution = (width, height)
   camera.framerate = 30 #TODO not sure if this does anything
@@ -84,7 +86,7 @@ def _stream_video(args):
   signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
 
   stream = io.BytesIO()
-  for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+  for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True, thumbnail=None):
     FPS.frame_count += 1
     stream.seek(0)
     data = stream.read()
@@ -96,7 +98,7 @@ def _stream_video(args):
     now = datetime.datetime.now()
     camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, FPS.frame_count, signal)
 
-    time.sleep(.1)
+    #time.sleep(.1)
 
 @app.route(REDIRECT_URI)
 @app.route(REDIRECT_URI + '/<page>')
