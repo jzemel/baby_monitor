@@ -72,6 +72,15 @@ def stream_video():
 
 
 def _stream_video(args):
+  try:
+    camera.close()
+    print("checking for existing cams")
+    sleep(2)
+  except (AttributeError, NameError):
+    print("no camera open yet")
+    global camera
+  print("initializing camera")
+  camera = picamera.PiCamera()
   width = int(args.get('width')) if args.get('width') else def_width
   height = int(args.get('height')) if args.get('height') else width * 9/16
   rotation = int(args.get('rotation')) if args.get('rotation') else def_rotation
@@ -86,19 +95,26 @@ def _stream_video(args):
   signal = re.search(r'signal:.+\t-(\d\d)', subprocess.check_output(["iw","wlan0","station","dump"])).group(1)
 
   stream = io.BytesIO()
-  for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True, thumbnail=None):
-    FPS.frame_count += 1
-    stream.seek(0)
-    data = stream.read()
-    stream.seek(0)
-    stream.truncate()
+  try:
+    for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True, thumbnail=None):
+      FPS.frame_count += 1
+      stream.seek(0)
+      data = stream.read()
+      stream.seek(0)
+      stream.truncate()
 
-    yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + data + b'\r\n')
+      yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + data + b'\r\n')
 
-    now = datetime.datetime.now()
-    camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, FPS.frame_count, signal)
+      now = datetime.datetime.now()
+      camera.annotate_text = '{0} - {1: %Y/%m/%d %H:%M:%S} - {2} -{3} dbm'.format('Room', now, FPS.frame_count, signal)
 
-    #time.sleep(.1)
+      #time.sleep(.1)
+  except picamera.exc.PiCameraAlreadyRecording:
+    print("already recording!")
+    camera.close()
+
+  finally:
+    camera.close()
 
 @app.route(REDIRECT_URI)
 @app.route(REDIRECT_URI + '/<page>')
@@ -128,16 +144,21 @@ def get_tlm():
   tlm['fps'] = FPS.getFPS()
   tlm['cpu_temp'] = psutil.sensors_temperatures()['cpu-thermal'][0].current
   tlm['time'] = datetime.datetime.now().strftime('%I:%M:%S - %d %b %Y')
-  print("sending telemtry via REST")
   return flask.jsonify(tlm)
   #network buffers?
 
+@app.errorhandler(500)
+def internal_error(error):
+  print("caught 500!")
+  return "500 error", 500
+
+
 if __name__ == '__main__':
   try:
-    global camera
-    print("initializing camera")
-    camera = picamera.PiCamera()
-    print("camera initialized")
+    # global camera
+    # print("initializing camera")
+    # camera = picamera.PiCamera()
+    # print("camera initialized")
     app.run(host='0.0.0.0', port=port, debug=False, ssl_context=(FILE_PATH + 'cert.pem', FILE_PATH + 'key.pem'))
   finally:
     camera.close()
